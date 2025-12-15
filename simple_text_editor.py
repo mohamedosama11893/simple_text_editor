@@ -39,9 +39,9 @@ def set_title(path):
     Otherwise, show "Untitled".
     """
     if path:
-        window.title(f"Mosama Text Editor - {os.path.basename(path)}")
+        window.title(f"Simple Text Editor - {os.path.basename(path)}")
     else:
-        window.title("Mosama Text Editor - Untitled")
+        window.title("Simple Text Editor - Untitled")
 #======================================================================================================#
 
 def open_file():
