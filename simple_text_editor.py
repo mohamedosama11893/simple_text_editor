@@ -67,6 +67,60 @@ def open_file():
         showerror("Open Error", f"Could not open file:\n{e}")
 #======================================================================================================#
 
+def save_file_as():
+    """
+    Save the current text into a new file.
+    - Uses asksaveasfilename() to ask for file name.
+    - Writes editor content into the chosen file.
+    - Updates title bar and resets modified flag.
+    """
+    global current_file
+    path = asksaveasfilename(defaultextension=".txt",
+                             filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+    if not path:
+        return False
+    try:
+        with open(path, "w", encoding="utf-8") as output_file:
+            content = txt_edit.get("1.0", "end-1c")  # avoid extra newline
+            output_file.write(content)
+        current_file = path
+        set_title(path)
+        txt_edit.edit_modified(False)
+        return True
+    except Exception as e:
+        showerror("Save Error", f"Could not save file:\n{e}")
+        return False
+#======================================================================================================#
+
+def save_file():
+    """
+    Save the file:
+    - If already opened/saved, overwrite.
+    - If no file exists, call save_file_as().
+    """
+    global current_file
+    if current_file:
+        try:
+            with open(current_file, "w", encoding="utf-8") as f:
+                f.write(txt_edit.get("1.0", "end-1c"))
+            txt_edit.edit_modified(False)
+        except Exception as e:
+            showerror("Save Error", f"Could not save file:\n{e}")
+    else:
+        save_file_as()
+#======================================================================================================#
+
+def on_close():
+    """
+    Called when user closes the window.
+    - If there are unsaved changes, ask for confirmation.
+    - If confirmed, close the window.
+    """
+    if txt_edit.edit_modified():
+        if not askyesno("Quit", "You have unsaved changes. Quit anyway?"):
+            return
+    window.destroy()
+
 
 # ------------------------------
 # GUI Setup
