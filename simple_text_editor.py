@@ -32,6 +32,40 @@ current_file = None
 # ------------------------------
 # Text editor Methods
 # ------------------------------
+def set_title(path):
+    """
+    Update the window title.
+    If a path is provided, show file name.
+    Otherwise, show "Untitled".
+    """
+    if path:
+        window.title(f"Mosama Text Editor - {os.path.basename(path)}")
+    else:
+        window.title("Mosama Text Editor - Untitled")
+#======================================================================================================#
+
+def open_file():
+    """
+    Open a text file and load its content into the editor.
+    - Uses askopenfilename() to select a file.
+    - Replaces the current text content with the file content.
+    - Updates the title bar with file name.
+    """
+    global current_file
+    path = askopenfilename(filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+    if not path:  # If user cancelled
+        return
+    try:
+        with open(path, "r", encoding="utf-8") as input_file:
+            content = input_file.read()
+        txt_edit.delete("1.0", tk.END)  # Clear old content
+        txt_edit.insert("1.0", content)  # Insert new content
+        current_file = path
+        set_title(path)
+        txt_edit.edit_modified(False)  # Reset modified flag
+    except Exception as e:
+        showerror("Open Error", f"Could not open file:\n{e}")
+#======================================================================================================#
 
 
 # ------------------------------
